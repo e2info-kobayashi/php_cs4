@@ -1,4 +1,4 @@
-name: PHP CodeSniffer によるコードチェック実行
+name: PHP CodeSniffer for Pull Requests
 
 on:
   pull_request:
@@ -8,6 +8,9 @@ on:
 jobs:
   phpcs:
     runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout repository
