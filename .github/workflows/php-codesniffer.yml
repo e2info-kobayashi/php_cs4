@@ -31,13 +31,14 @@ jobs:
         run: |
           result=$(phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php 2>&1)
           exit_code=$?
+          echo "Result of PHP CodeSniffer:"
           echo "$result"
           echo "$result" > result.log
           echo "result=$result" >> $GITHUB_ENV
           exit $exit_code
 
       - name: Comment PHP CodeSniffer results on PR
-        if: failure()
+        if: ${{ failure() }}
         uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ github.event.pull_request.number }}
