@@ -32,6 +32,6 @@ jobs:
           phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php
           exit_code=$?
           if [ $exit_code -ne 0 ]; then
-            echo "::error file=src/,line=1::PHP CodeSniffer エラーがあります"  # エラーをアノテーションとして表示
+            echo "::error file=src/,line=1::PHP CodeSniffer エラーがあります"
             exit 1  # エラーがあればワークフローを失敗させる
           fi
