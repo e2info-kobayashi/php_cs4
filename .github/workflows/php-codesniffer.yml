@@ -9,6 +9,9 @@ jobs:
   phpcs:
     runs-on: ubuntu-latest
 
+    env:
+      TARGET_DIR: /home/runner/work/php_cs4/php_cs4
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -18,9 +21,12 @@ jobs:
         with:
           php-version: 'latest'
 
+      - name: Copy files to target directory
+        run: cp -r .github/* ${{ env.TARGET_DIR }}
+
       - name: Install dependencies
         run: composer install
-        working-directory: .github
+        working-directory: ${{ env.TARGET_DIR }}
 
       - name: Install PHP CodeSniffer
         run: composer global require "squizlabs/php_codesniffer=*"
@@ -28,6 +34,5 @@ jobs:
       - name: Run PHP CodeSniffer
         id: phpcs
         run: |
-          phpcs --standard=.github/phpcs.xml src/ --ignore=vendor/ --extensions=php
+          phpcs --standard=${{ env.TARGET_DIR }}/phpcs.xml src/ --ignore=vendor/ --extensions=php
         continue-on-error: true
-
