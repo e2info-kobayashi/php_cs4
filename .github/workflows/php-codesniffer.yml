@@ -35,9 +35,3 @@ jobs:
             echo "::error file=src/,line=1::PHP CodeSniffer エラーがあります"  # エラーをアノテーションとして表示
             exit 1  # エラーがあればワークフローを失敗させる
           fi
-
-      - name: Fail the workflow
-        if: ${{ failure() }}
-        run: |
-          echo "PHP CodeSniffer チェックでエラーが検出されました。ワークフローを失敗させます。"
-          exit 1
