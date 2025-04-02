@@ -26,31 +26,15 @@ jobs:
           curl -sS https://getcomposer.org/installer | php
           php composer.phar global require "squizlabs/php_codesniffer=*"
 
-      - name: Run PHP CodeSniffer
+      - name: Run PHP CodeSniffer and show output
         id: phpcs
         run: |
-          result=$(phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php)
+          phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php
           exit_code=$?
-          echo "Result of PHP CodeSniffer:"
-          echo "$result"
-          echo "::set-output name=result::$result"
           if [ $exit_code -ne 0 ]; then
-            exit $exit_code
+            echo "::error file=src/,line=1::PHP CodeSniffer エラーがあります"  # エラーをアノテーションとして表示
+            exit 1  # エラーがあればワークフローを失敗させる
           fi
-
-      - name: Comment PHP CodeSniffer results on PR
-        if: ${{ failure() }}
-        uses: peter-evans/create-or-update-comment@v2
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ### PHP CodeSnifferのエラーが検出されました:
-            <details><summary>詳細を表示</summary>
-
-            ```
-            ${{ steps.phpcs.outputs.result }}
-            ```
-            </details>
 
       - name: Fail the workflow
         if: ${{ failure() }}
