@@ -1,4 +1,4 @@
-name: PHP CodeSniffer for Pull Requests
+name: PHP CodeSniffer によるコードチェック
 
 on:
   pull_request:
@@ -29,10 +29,11 @@ jobs:
       - name: Run PHP CodeSniffer
         id: phpcs
         run: |
-          result=$(phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php)
+          result=$(phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php 2>&1)
           exit_code=$?
           echo "$result"
           echo "$result" > result.log
+          echo "::set-output name=result::$result"
           exit $exit_code
 
       - name: Comment PHP CodeSniffer results on PR
