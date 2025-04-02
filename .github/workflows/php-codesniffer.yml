@@ -29,13 +29,14 @@ jobs:
       - name: Run PHP CodeSniffer
         id: phpcs
         run: |
-          result=$(phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php 2>&1)
+          result=$(phpcs --standard=PSR12 src/ --ignore=vendor/ --extensions=php)
           exit_code=$?
           echo "Result of PHP CodeSniffer:"
           echo "$result"
-          echo "$result" > result.log
-          echo "result=$result" >> $GITHUB_ENV
-          exit $exit_code
+          echo "::set-output name=result::$result"
+          if [ $exit_code -ne 0 ]; then
+            exit $exit_code
+          fi
 
       - name: Comment PHP CodeSniffer results on PR
         if: ${{ failure() }}
@@ -44,6 +45,15 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ### PHP CodeSnifferのエラーが検出されました:
+            <details><summary>詳細を表示</summary>
+
             ```
-            ${{ env.result }}
+            ${{ steps.phpcs.outputs.result }}
             ```
+            </details>
+
+      - name: Fail the workflow
+        if: ${{ failure() }}
+        run: |
+          echo "PHP CodeSniffer チェックでエラーが検出されました。ワークフローを失敗させます。"
+          exit 1
