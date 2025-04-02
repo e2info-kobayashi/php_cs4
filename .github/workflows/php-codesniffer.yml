@@ -33,7 +33,7 @@ jobs:
           exit_code=$?
           echo "$result"
           echo "$result" > result.log
-          echo "::set-output name=result::$result"
+          echo "result=$result" >> $GITHUB_ENV
           exit $exit_code
 
       - name: Comment PHP CodeSniffer results on PR
@@ -44,5 +44,5 @@ jobs:
           body: |
             ### PHP CodeSnifferのエラーが検出されました:
             ```
-            ${{ steps.phpcs.outputs.result }}
+            ${{ env.result }}
             ```
