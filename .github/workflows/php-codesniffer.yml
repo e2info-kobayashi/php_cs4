@@ -25,11 +25,9 @@ jobs:
         run: cp -r .github/* ${{ env.TARGET_DIR }}
 
       - name: Install dependencies
-        run: composer install
-        working-directory: ${{ env.TARGET_DIR }}
-
-      - name: Install PHP CodeSniffer
-        run: composer global require "squizlabs/php_codesniffer=*"
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          php composer.phar global require "squizlabs/php_codesniffer=*"
 
       - name: Run PHP CodeSniffer
         id: phpcs
