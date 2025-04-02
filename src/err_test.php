@@ -13,4 +13,5 @@ class sampleClass{
     else{echo "Arguments are not equal";}
     }
 }
+
 ?>
