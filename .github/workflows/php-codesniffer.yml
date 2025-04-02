@@ -26,8 +26,13 @@ jobs:
       - name: Run PHP CodeSniffer
         id: phpcs
         run: |
-          phpcs --standard=.github/phpcs.xml src/ --ignore=vendor/ --extensions=php | tee result.log
-        continue-on-error: true
+          result=$(phpcs --standard=.github/phpcs.xml src/ --ignore=vendor/ --extensions=php)
+          echo "$result"
+          echo "$result" > result.log 
+          if [ $? -ne 0 ]; then
+            echo "PHP_CodeSniffer errors detected."
+            exit 1
+          fi
 
       - name: Comment PHP CodeSniffer results on PR
         if: failure()
