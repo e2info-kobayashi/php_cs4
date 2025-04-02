@@ -1,0 +1,7 @@
+{
+    "name": "e2info/github-actions-php_codesniffer",
+    "license": "FTL",
+    "require": {
+        "squizlabs/php_codesniffer": "*"
+    }
+}

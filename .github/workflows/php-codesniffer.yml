@@ -1,0 +1,41 @@
+name: PHP CodeSniffer によるコードチェック実行
+
+on:
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  phpcs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 'latest'
+
+      - name: Install dependencies
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          php composer.phar global require "squizlabs/php_codesniffer=*"
+
+      - name: Run PHP CodeSniffer
+        id: phpcs
+        run: |
+          phpcs --standard=.github/phpcs.xml src/ --ignore=vendor/ --extensions=php | tee result.log
+        continue-on-error: true
+
+      - name: Comment PHP CodeSniffer results on PR
+        if: failure()
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### PHP CodeSnifferのエラーが検出されました:
+            ```
+            ${{ steps.phpcs.outputs.result }}
+            ```
