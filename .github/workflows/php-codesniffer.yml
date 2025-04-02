@@ -27,4 +27,3 @@ jobs:
         id: phpcs
         run: |
           phpcs --standard=.github/phpcs.xml src/ --ignore=vendor/ --extensions=php
-        continue-on-error: false
